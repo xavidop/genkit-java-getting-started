@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>genkit-java-getting-started</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>Genkit Java Getting Started</name>
+    <description>A getting started project using Genkit Java with Gemini, deployable to Google Cloud Run</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <genkit.version>1.0.0-SNAPSHOT</genkit.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>genkit-java</id>
+            <url>https://maven.pkg.github.com/genkit-ai/genkit-java</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- Core Genkit framework -->
+        <dependency>
+            <groupId>com.google.genkit</groupId>
+            <artifactId>genkit</artifactId>
+            <version>${genkit.version}</version>
+        </dependency>
+
+        <!-- Google GenAI plugin (Gemini models) -->
+        <dependency>
+            <groupId>com.google.genkit</groupId>
+            <artifactId>genkit-plugin-google-genai</artifactId>
+            <version>${genkit.version}</version>
+        </dependency>
+
+        <!-- Jetty HTTP server plugin -->
+        <dependency>
+            <groupId>com.google.genkit</groupId>
+            <artifactId>genkit-plugin-jetty</artifactId>
+            <version>${genkit.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.28</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.15.0</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <mainClass>com.example.App</mainClass>
+                </configuration>
+            </plugin>
+
+            <!-- Build a fat JAR for Cloud Run -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.example.App</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Jib: build and push container images without Docker -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <from>
+                        <image>eclipse-temurin:21-jre</image>
+                    </from>
+                    <to>
+                        <image>gcr.io/${env.PROJECT_ID}/genkit-java-app</image>
+                    </to>
+                    <container>
+                        <mainClass>com.example.App</mainClass>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <environment>
+                            <PORT>8080</PORT>
+                        </environment>
+                    </container>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

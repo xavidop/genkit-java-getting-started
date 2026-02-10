@@ -13,7 +13,6 @@ If you're a Java developer, you've probably watched the Gen AI revolution unfold
 Genkit Java changes that. Here's what makes it different:
 
 | Feature | Without Genkit | With Genkit |
-||||
 | Call Gemini | Manual HTTP client, JSON parsing, error handling | `genkit.generate(...)`, one method call |
 | Expose as API | Set up Spring Boot, write controllers, handle serialization | `genkit.defineFlow(...)`, auto-exposed as HTTP endpoint |
 | Structured output | Parse raw JSON strings, deserialize manually | `outputClass(MyClass.class)`, Gemini returns typed Java objects |
@@ -93,6 +92,8 @@ genkit start -- mvn compile exec:java
 ```
 
 That's it. Two commands. Your AI-powered Java server is running on `http://localhost:8080`, and the **Genkit Dev UI** is available at `http://localhost:4000`.
+
+![Genkit Dev UI Screenshot](assets/devui.png)
 
 ### 3. Or Run Directly (Without Dev UI)
 
@@ -434,8 +435,6 @@ This getting-started project covers the fundamentals. Genkit Java can do much mo
 - **Firebase**, Deploy as Cloud Functions with Firestore vector search
 
 Explore the [full Genkit Java documentation](https://github.com/genkit-ai/genkit-java) and the [samples directory](https://github.com/genkit-ai/genkit-java/tree/main/samples) to dive deeper.
-
-
 
 ## License
 
